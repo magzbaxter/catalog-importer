@@ -54,13 +54,7 @@
             // For setups requiring multiple headers for authorization
             headers: {
               'X-Auth-Token': '$(AUTH_TOKEN)',
-              'X-Custom-Header': '$(CUSTOM_HEADER)',
-            },
-            
-            // For setups requiring cookies for authorization
-            cookies: {
-              'session': '$(SESSION_COOKIE)',
-              'auth': '$(AUTH_COOKIE)',
+              'Cookie': '$(COOKIE_VALUE)', // Full cookie header value
             },
           },
         },

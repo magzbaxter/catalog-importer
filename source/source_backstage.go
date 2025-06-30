@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"strings"
 	"time"
 
 	kitlog "github.com/go-kit/kit/log"
@@ -24,7 +23,6 @@ type SourceBackstage struct {
 	SignJWT  *bool                 `json:"sign_jwt"`
 	Header   string                `json:"header"`
 	Headers  map[string]Credential `json:"headers"`
-	Cookies  map[string]Credential `json:"cookies"`
 	PageSize int                   `json:"page_size"`
 	Filter   string                `json:"filter"`
 }
@@ -232,8 +230,8 @@ func (s SourceBackstage) getJWT() (string, error) {
 	return token.SignedString(secret)
 }
 
-// setAuthentication applies authentication headers and cookies to the HTTP request.
-// It supports legacy single-header authentication, multi-header authentication, and cookie authentication.
+// setAuthentication applies authentication headers to the HTTP request.
+// It supports both legacy single-header authentication and new multi-header authentication.
 func (s SourceBackstage) setAuthentication(req *http.Request, token string) error {
 	// Legacy single token authentication (backward compatibility)
 	if token != "" {
@@ -244,24 +242,10 @@ func (s SourceBackstage) setAuthentication(req *http.Request, token string) erro
 		req.Header.Add(header, fmt.Sprintf("Bearer %s", token))
 	}
 
-	// New multi-header authentication
+	// New multi-header authentication (including Cookie headers)
 	for headerName, headerValue := range s.Headers {
 		if headerValue != "" {
 			req.Header.Add(headerName, string(headerValue))
-		}
-	}
-
-	// Cookie authentication - build proper Cookie header
-	if len(s.Cookies) > 0 {
-		var cookieParts []string
-		for cookieName, cookieValue := range s.Cookies {
-			if cookieValue != "" {
-				cookieParts = append(cookieParts, fmt.Sprintf("%s=%s", cookieName, string(cookieValue)))
-			}
-		}
-		if len(cookieParts) > 0 {
-			cookieHeader := strings.Join(cookieParts, "; ")
-			req.Header.Set("Cookie", cookieHeader)
 		}
 	}
 

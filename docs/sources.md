@@ -141,18 +141,11 @@ This looks like:
     sign_jwt: false,
 
     // For setups requiring multiple headers for authorization, you can use the
-    // headers field. This supports environment variable substitution.
+    // headers field. This supports environment variable substitution and any
+    // header type including Cookie headers.
     headers: {
       'X-Auth-Token': '$(AUTH_TOKEN)',
-      'X-Custom-Header': '$(CUSTOM_HEADER)',
-    },
-
-    // For setups requiring cookies for authorization, you can use the
-    // cookies field. This also supports environment variable substitution.
-    // Cookies will be properly formatted into a single Cookie header.
-    cookies: {
-      'session': '$(SESSION_COOKIE)',
-      'auth': '$(AUTH_COOKIE)',
+      'Cookie': '$(COOKIE_VALUE)', // Full cookie header value
     },
   },
 }

@@ -323,19 +323,15 @@ var _ = Describe("SourceBackstage", func() {
 			})
 		})
 
-		Context("cookie authentication", func() {
+		Context("cookie header via headers field", func() {
 			BeforeEach(func() {
-				s.Cookies = map[string]source.Credential{
-					"session": "session-value",
-					"auth":    "auth-value",
+				s.Headers = map[string]source.Credential{
+					"Cookie": "session=session-value; auth=auth-value",
 				}
 			})
 
-			It("sets properly formatted Cookie header", func() {
-				cookieHeader := backstageRequest.Header.Get("Cookie")
-				Expect(cookieHeader).To(ContainSubstring("session=session-value"))
-				Expect(cookieHeader).To(ContainSubstring("auth=auth-value"))
-				Expect(cookieHeader).To(ContainSubstring("; "))
+			It("sets Cookie header directly", func() {
+				Expect(backstageRequest.Header.Get("Cookie")).To(Equal("session=session-value; auth=auth-value"))
 			})
 		})
 
@@ -346,9 +342,7 @@ var _ = Describe("SourceBackstage", func() {
 				s.SignJWT = &signJWT // Disable JWT signing for simpler testing
 				s.Headers = map[string]source.Credential{
 					"X-Auth-Token": "header-token",
-				}
-				s.Cookies = map[string]source.Credential{
-					"session": "session-cookie",
+					"Cookie":       "session=session-cookie",
 				}
 			})
 
@@ -357,7 +351,7 @@ var _ = Describe("SourceBackstage", func() {
 				Expect(backstageRequest.Header.Get("Authorization")).To(Equal("Bearer legacy-token"))
 				// Custom headers
 				Expect(backstageRequest.Header.Get("X-Auth-Token")).To(Equal("header-token"))
-				// Cookies
+				// Cookie header
 				Expect(backstageRequest.Header.Get("Cookie")).To(Equal("session=session-cookie"))
 			})
 		})
