@@ -53,7 +53,7 @@
             
             // For setups requiring multiple headers for authorization
             headers: {
-              'X-Auth-Token': '$(AUTH_TOKEN)',
+              'Authorization': 'Bearer $(BACKSTAGE_TOKEN)',
               'Cookie': '$(COOKIE_VALUE)', // Full cookie header value
             },
           },

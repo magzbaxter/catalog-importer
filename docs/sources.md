@@ -144,7 +144,7 @@ This looks like:
     // headers field. This supports environment variable substitution and any
     // header type including Cookie headers.
     headers: {
-      'X-Auth-Token': '$(AUTH_TOKEN)',
+      'Authorization': 'Bearer $(BACKSTAGE_TOKEN)',
       'Cookie': '$(COOKIE_VALUE)', // Full cookie header value
     },
   },
