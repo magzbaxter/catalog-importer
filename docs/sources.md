@@ -139,6 +139,20 @@ This looks like:
     // as-is instead of signed into JWTs. If this is you, explicitly opt-out of
     // signing like so:
     sign_jwt: false,
+
+    // For setups requiring multiple headers for authorization, you can use the
+    // headers field. This supports environment variable substitution.
+    headers: {
+      'X-Auth-Token': '$(AUTH_TOKEN)',
+      'X-Custom-Header': '$(CUSTOM_HEADER)',
+    },
+
+    // For setups requiring cookies for authorization, you can use the
+    // cookies field. This also supports environment variable substitution.
+    cookies: {
+      'session': '$(SESSION_COOKIE)',
+      'auth': '$(AUTH_COOKIE)',
+    },
   },
 }
 ```

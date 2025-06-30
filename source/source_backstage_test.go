@@ -253,4 +253,121 @@ var _ = Describe("SourceBackstage", func() {
 
 		})
 	})
+
+	Context("authentication", func() {
+		BeforeEach(func() {
+			s = source.SourceBackstage{
+				Endpoint: "https://example.com/api/catalog/entities/by-query",
+			}
+
+			client = cleanhttp.DefaultClient()
+			mock = httpmock.NewMockTransport()
+			client.Transport = mock
+		})
+
+		var backstageRequest *http.Request
+
+		BeforeEach(func() {
+			mock.RegisterResponder(
+				http.MethodGet,
+				"https://example.com/api/catalog/entities/by-query",
+				func(req *http.Request) (*http.Response, error) {
+					backstageRequest = req
+					resp, err := httpmock.NewJsonResponse(http.StatusOK, map[string]any{"items": []any{}})
+					Expect(err).To(Succeed())
+					return resp, nil
+				},
+			)
+		})
+
+		JustBeforeEach(func() {
+			_, err := s.Load(ctx, logger, client)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(backstageRequest).NotTo(BeNil())
+		})
+
+		Context("legacy token authentication", func() {
+			BeforeEach(func() {
+				s.Token = "test-token"
+				signJWT := false
+				s.SignJWT = &signJWT // Disable JWT signing for simpler testing
+			})
+
+			It("sets Authorization header by default", func() {
+				Expect(backstageRequest.Header.Get("Authorization")).To(Equal("Bearer test-token"))
+			})
+
+			When("custom header is specified", func() {
+				BeforeEach(func() {
+					s.Header = "X-Custom-Auth"
+				})
+
+				It("uses the custom header", func() {
+					Expect(backstageRequest.Header.Get("X-Custom-Auth")).To(Equal("Bearer test-token"))
+					Expect(backstageRequest.Header.Get("Authorization")).To(BeEmpty())
+				})
+			})
+		})
+
+		Context("multiple headers authentication", func() {
+			BeforeEach(func() {
+				s.Headers = map[string]source.Credential{
+					"X-Auth-Token":    "auth-token-value",
+					"X-Custom-Header": "custom-header-value",
+				}
+			})
+
+			It("sets all specified headers", func() {
+				Expect(backstageRequest.Header.Get("X-Auth-Token")).To(Equal("auth-token-value"))
+				Expect(backstageRequest.Header.Get("X-Custom-Header")).To(Equal("custom-header-value"))
+			})
+		})
+
+		Context("cookie authentication", func() {
+			BeforeEach(func() {
+				s.Cookies = map[string]source.Credential{
+					"session": "session-value",
+					"auth":    "auth-value",
+				}
+			})
+
+			It("sets all specified cookies", func() {
+				cookies := backstageRequest.Cookies()
+				cookieMap := make(map[string]string)
+				for _, cookie := range cookies {
+					cookieMap[cookie.Name] = cookie.Value
+				}
+				Expect(cookieMap).To(HaveKeyWithValue("session", "session-value"))
+				Expect(cookieMap).To(HaveKeyWithValue("auth", "auth-value"))
+			})
+		})
+
+		Context("combined authentication", func() {
+			BeforeEach(func() {
+				s.Token = "legacy-token"
+				signJWT := false
+				s.SignJWT = &signJWT // Disable JWT signing for simpler testing
+				s.Headers = map[string]source.Credential{
+					"X-Auth-Token": "header-token",
+				}
+				s.Cookies = map[string]source.Credential{
+					"session": "session-cookie",
+				}
+			})
+
+			It("sets all authentication methods", func() {
+				// Legacy token
+				Expect(backstageRequest.Header.Get("Authorization")).To(Equal("Bearer legacy-token"))
+				// Custom headers
+				Expect(backstageRequest.Header.Get("X-Auth-Token")).To(Equal("header-token"))
+				// Cookies
+				cookies := backstageRequest.Cookies()
+				cookieMap := make(map[string]string)
+				for _, cookie := range cookies {
+					cookieMap[cookie.Name] = cookie.Value
+				}
+				Expect(cookieMap).To(HaveKeyWithValue("session", "session-cookie"))
+			})
+		})
+	})
 })
