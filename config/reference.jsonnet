@@ -56,6 +56,12 @@
               'X-Auth-Token': '$(AUTH_TOKEN)',
               'X-Custom-Header': '$(CUSTOM_HEADER)',
             },
+            
+            // For setups requiring cookies for authorization
+            cookies: {
+              'session': '$(SESSION_COOKIE)',
+              'auth': '$(AUTH_COOKIE)',
+            },
           },
         },
         // When catalog data is stored in source code across GitHub repos, use

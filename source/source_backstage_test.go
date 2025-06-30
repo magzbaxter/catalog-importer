@@ -323,6 +323,22 @@ var _ = Describe("SourceBackstage", func() {
 			})
 		})
 
+		Context("cookie authentication", func() {
+			BeforeEach(func() {
+				s.Cookies = map[string]source.Credential{
+					"session": "session-value",
+					"auth":    "auth-value",
+				}
+			})
+
+			It("sets properly formatted Cookie header", func() {
+				cookieHeader := backstageRequest.Header.Get("Cookie")
+				Expect(cookieHeader).To(ContainSubstring("session=session-value"))
+				Expect(cookieHeader).To(ContainSubstring("auth=auth-value"))
+				Expect(cookieHeader).To(ContainSubstring("; "))
+			})
+		})
+
 		Context("combined authentication", func() {
 			BeforeEach(func() {
 				s.Token = "legacy-token"
@@ -331,6 +347,9 @@ var _ = Describe("SourceBackstage", func() {
 				s.Headers = map[string]source.Credential{
 					"X-Auth-Token": "header-token",
 				}
+				s.Cookies = map[string]source.Credential{
+					"session": "session-cookie",
+				}
 			})
 
 			It("sets all authentication methods", func() {
@@ -338,6 +357,8 @@ var _ = Describe("SourceBackstage", func() {
 				Expect(backstageRequest.Header.Get("Authorization")).To(Equal("Bearer legacy-token"))
 				// Custom headers
 				Expect(backstageRequest.Header.Get("X-Auth-Token")).To(Equal("header-token"))
+				// Cookies
+				Expect(backstageRequest.Header.Get("Cookie")).To(Equal("session=session-cookie"))
 			})
 		})
 	})
