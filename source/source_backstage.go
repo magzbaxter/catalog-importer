@@ -23,7 +23,6 @@ type SourceBackstage struct {
 	SignJWT  *bool                 `json:"sign_jwt"`
 	Header   string                `json:"header"`
 	Headers  map[string]Credential `json:"headers"`
-	Cookies  map[string]Credential `json:"cookies"`
 	PageSize int                   `json:"page_size"`
 	Filter   string                `json:"filter"`
 }
@@ -231,8 +230,8 @@ func (s SourceBackstage) getJWT() (string, error) {
 	return token.SignedString(secret)
 }
 
-// setAuthentication applies authentication headers and cookies to the HTTP request.
-// It supports both legacy single-header authentication and new multi-header/cookie authentication.
+// setAuthentication applies authentication headers to the HTTP request.
+// It supports both legacy single-header authentication and new multi-header authentication.
 func (s SourceBackstage) setAuthentication(req *http.Request, token string) error {
 	// Legacy single token authentication (backward compatibility)
 	if token != "" {
@@ -247,17 +246,6 @@ func (s SourceBackstage) setAuthentication(req *http.Request, token string) erro
 	for headerName, headerValue := range s.Headers {
 		if headerValue != "" {
 			req.Header.Add(headerName, string(headerValue))
-		}
-	}
-
-	// Cookie authentication
-	for cookieName, cookieValue := range s.Cookies {
-		if cookieValue != "" {
-			cookie := &http.Cookie{
-				Name:  cookieName,
-				Value: string(cookieValue),
-			}
-			req.AddCookie(cookie)
 		}
 	}
 

@@ -146,13 +146,6 @@ This looks like:
       'X-Auth-Token': '$(AUTH_TOKEN)',
       'X-Custom-Header': '$(CUSTOM_HEADER)',
     },
-
-    // For setups requiring cookies for authorization, you can use the
-    // cookies field. This also supports environment variable substitution.
-    cookies: {
-      'session': '$(SESSION_COOKIE)',
-      'auth': '$(AUTH_COOKIE)',
-    },
   },
 }
 ```

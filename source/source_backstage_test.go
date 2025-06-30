@@ -323,25 +323,6 @@ var _ = Describe("SourceBackstage", func() {
 			})
 		})
 
-		Context("cookie authentication", func() {
-			BeforeEach(func() {
-				s.Cookies = map[string]source.Credential{
-					"session": "session-value",
-					"auth":    "auth-value",
-				}
-			})
-
-			It("sets all specified cookies", func() {
-				cookies := backstageRequest.Cookies()
-				cookieMap := make(map[string]string)
-				for _, cookie := range cookies {
-					cookieMap[cookie.Name] = cookie.Value
-				}
-				Expect(cookieMap).To(HaveKeyWithValue("session", "session-value"))
-				Expect(cookieMap).To(HaveKeyWithValue("auth", "auth-value"))
-			})
-		})
-
 		Context("combined authentication", func() {
 			BeforeEach(func() {
 				s.Token = "legacy-token"
@@ -350,9 +331,6 @@ var _ = Describe("SourceBackstage", func() {
 				s.Headers = map[string]source.Credential{
 					"X-Auth-Token": "header-token",
 				}
-				s.Cookies = map[string]source.Credential{
-					"session": "session-cookie",
-				}
 			})
 
 			It("sets all authentication methods", func() {
@@ -360,13 +338,6 @@ var _ = Describe("SourceBackstage", func() {
 				Expect(backstageRequest.Header.Get("Authorization")).To(Equal("Bearer legacy-token"))
 				// Custom headers
 				Expect(backstageRequest.Header.Get("X-Auth-Token")).To(Equal("header-token"))
-				// Cookies
-				cookies := backstageRequest.Cookies()
-				cookieMap := make(map[string]string)
-				for _, cookie := range cookies {
-					cookieMap[cookie.Name] = cookie.Value
-				}
-				Expect(cookieMap).To(HaveKeyWithValue("session", "session-cookie"))
 			})
 		})
 	})
