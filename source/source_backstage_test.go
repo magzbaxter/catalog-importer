@@ -8,7 +8,7 @@ import (
 
 	kitlog "github.com/go-kit/kit/log"
 	"github.com/hashicorp/go-cleanhttp"
-	"github.com/incident-io/catalog-importer/v2/source"
+	"github.com/magzbaxter/catalog-importer/v2/source"
 	"github.com/jarcoal/httpmock"
 
 	. "github.com/onsi/ginkgo/v2"

@@ -10,7 +10,7 @@ import (
 	"time"
 
 	kitlog "github.com/go-kit/kit/log"
-	"github.com/incident-io/catalog-importer/v2/client"
+	"github.com/magzbaxter/catalog-importer/v2/client"
 	"github.com/samber/lo"
 
 	. "github.com/onsi/ginkgo/v2"

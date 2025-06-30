@@ -4,9 +4,9 @@ import (
 	"context"
 
 	kitlog "github.com/go-kit/kit/log"
-	"github.com/incident-io/catalog-importer/v2/client"
-	"github.com/incident-io/catalog-importer/v2/output"
-	"github.com/incident-io/catalog-importer/v2/reconcile"
+	"github.com/magzbaxter/catalog-importer/v2/client"
+	"github.com/magzbaxter/catalog-importer/v2/output"
+	"github.com/magzbaxter/catalog-importer/v2/reconcile"
 	"github.com/samber/lo"
 	"gopkg.in/guregu/null.v3"
 

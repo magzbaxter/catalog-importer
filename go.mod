@@ -1,4 +1,4 @@
-module github.com/incident-io/catalog-importer/v2
+module github.com/magzbaxter/catalog-importer/v2
 
 go 1.23
 

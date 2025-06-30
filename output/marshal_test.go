@@ -5,8 +5,8 @@ import (
 	"os"
 
 	kitlog "github.com/go-kit/log"
-	"github.com/incident-io/catalog-importer/v2/client"
-	"github.com/incident-io/catalog-importer/v2/source"
+	"github.com/magzbaxter/catalog-importer/v2/client"
+	"github.com/magzbaxter/catalog-importer/v2/source"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"

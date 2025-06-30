@@ -16,11 +16,11 @@ import (
 	"github.com/samber/lo"
 	"github.com/schollz/progressbar/v3"
 
-	"github.com/incident-io/catalog-importer/v2/client"
-	"github.com/incident-io/catalog-importer/v2/config"
-	"github.com/incident-io/catalog-importer/v2/output"
-	"github.com/incident-io/catalog-importer/v2/reconcile"
-	"github.com/incident-io/catalog-importer/v2/source"
+	"github.com/magzbaxter/catalog-importer/v2/client"
+	"github.com/magzbaxter/catalog-importer/v2/config"
+	"github.com/magzbaxter/catalog-importer/v2/output"
+	"github.com/magzbaxter/catalog-importer/v2/reconcile"
+	"github.com/magzbaxter/catalog-importer/v2/source"
 )
 
 type SyncOptions struct {

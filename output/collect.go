@@ -4,8 +4,8 @@ import (
 	"context"
 
 	kitlog "github.com/go-kit/log"
-	"github.com/incident-io/catalog-importer/v2/expr"
-	"github.com/incident-io/catalog-importer/v2/source"
+	"github.com/magzbaxter/catalog-importer/v2/expr"
+	"github.com/magzbaxter/catalog-importer/v2/source"
 	"github.com/pkg/errors"
 )
 
